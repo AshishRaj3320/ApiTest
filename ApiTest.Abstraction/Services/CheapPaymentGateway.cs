@@ -10,19 +10,26 @@ namespace ApiTest.Abstraction.Services
     {
         private readonly IEntityRepository<Payment> _paymentRepository;
         private readonly IMapper _mapper;
-        private bool _isavailable;
+        private bool _isavailable,_isprocessed;
 
         public CheapPaymentGateway(IEntityRepository<Payment> paymentRepository, IMapper mapper)
         {
             _paymentRepository = paymentRepository;
             _mapper = mapper;
             _isavailable = true;
+            _isprocessed = true;
         }
        
         public bool IsAvailable  // read-write instance property
         {
             get => _isavailable;
             set => _isavailable = value;
+        }
+        
+        public bool IsProcessed  // read-write instance property
+        {
+            get => _isprocessed;
+            set => _isprocessed = value;
         }
 
         public async Task<bool> ProcessPayment(CardDetails cardDetails)
@@ -35,7 +42,7 @@ namespace ApiTest.Abstraction.Services
 
             await _paymentRepository.AddAsync(payment);
 
-            return true;
+            return _isprocessed;
         }
     }
 }

@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 
 namespace ApiTest.Abstraction.Services
 {
-    public interface IPaymentGateway 
+    public interface IPaymentGateway
     {
-       Task<bool> ProcessPayment(CardDetails cardDetails);
+        Task<bool> ProcessPayment(CardDetails cardDetails);
 
-       bool IsAvailable { get; set; }
+        bool IsAvailable { get; set; }
+        bool IsProcessed { get; set; }
     }
 }
