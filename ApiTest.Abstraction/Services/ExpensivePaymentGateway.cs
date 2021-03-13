@@ -12,13 +12,9 @@ namespace ApiTest.Abstraction.Services
 {
     public class ExpensivePaymentGateway : IPaymentGateway
     {
-        private readonly IEntityRepository<Payment> _paymentRepository;
-        private readonly IMapper _mapper;
         private bool _isavailable, _isprocessed;
         public ExpensivePaymentGateway(IEntityRepository<Payment> paymentRepository, IMapper mapper)
         {
-            _paymentRepository = paymentRepository;
-            _mapper = mapper;
             _isavailable = (new Random().Next(100) <= 20 ? true : false);
             _isprocessed = (new Random().Next(10) <= 20 ? true : false);
         }
@@ -34,14 +30,14 @@ namespace ApiTest.Abstraction.Services
             get => _isprocessed;
             set => _isprocessed = value;
         }
-        public async Task<bool> ProcessPayment(CardDetails cardDetails)
+        public async Task<ServiceResponse> ProcessPayment(CardDetails cardDetails)
         {
-            var payment = _mapper.Map<Payment>(cardDetails);
-
-            payment.Status = "pending";
-            payment.GateWayType = "Expensive";
-            await _paymentRepository.AddAsync(payment);
-            return _isprocessed;
+            return new ServiceResponse
+            {
+                IsAvailable = _isavailable,
+                IsProcessed = _isprocessed,
+                Status = _isprocessed && _isavailable ? "processed" : "failed"
+            };
         }
     }
 }

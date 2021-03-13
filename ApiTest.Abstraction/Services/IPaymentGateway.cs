@@ -7,9 +7,6 @@ namespace ApiTest.Abstraction.Services
 {
     public interface IPaymentGateway
     {
-        Task<bool> ProcessPayment(CardDetails cardDetails);
-
-        bool IsAvailable { get; set; }
-        bool IsProcessed { get; set; }
+        Task<ServiceResponse> ProcessPayment(CardDetails cardDetails);
     }
 }

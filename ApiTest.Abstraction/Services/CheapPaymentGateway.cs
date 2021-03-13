@@ -1,4 +1,5 @@
 ﻿using ApiTest.Abstraction.Models;
+using ApiTest.Abstraction.Services.Enum;
 using ApiTest.SQL;
 using ApiTest.SQL.DBModels;
 using AutoMapper;
@@ -8,14 +9,10 @@ namespace ApiTest.Abstraction.Services
 {
     public class CheapPaymentGateway : IPaymentGateway
     {
-        private readonly IEntityRepository<Payment> _paymentRepository;
-        private readonly IMapper _mapper;
         private bool _isavailable,_isprocessed;
 
         public CheapPaymentGateway(IEntityRepository<Payment> paymentRepository, IMapper mapper)
         {
-            _paymentRepository = paymentRepository;
-            _mapper = mapper;
             _isavailable = true;
             _isprocessed = true;
         }
@@ -32,17 +29,14 @@ namespace ApiTest.Abstraction.Services
             set => _isprocessed = value;
         }
 
-        public async Task<bool> ProcessPayment(CardDetails cardDetails)
+        public async Task<ServiceResponse> ProcessPayment(CardDetails cardDetails)
         {
-
-            var payment = _mapper.Map<Payment>(cardDetails);
-
-            payment.Status = "pending";
-            payment.GateWayType = "Cheap";
-
-            await _paymentRepository.AddAsync(payment);
-
-            return _isprocessed;
+            return new ServiceResponse
+            {
+                IsAvailable = _isavailable,
+                IsProcessed = _isprocessed,
+                Status = _isprocessed && _isavailable ? "processed" : "failed"
+            };
         }
     }
 }
